@@ -21,13 +21,12 @@ function initMap(latitude, longitude) {
         center: location,
     });
 
-    new google.maps.Marker({
+    new google.maps.marker.AdvancedMarkerElement({
         position: location,
         map: map,
     });
 }
 
-// Function to get user's location
 function getLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(showPosition, showError);
@@ -36,15 +35,17 @@ function getLocation() {
     }
 }
 
-// Function to handle successful location retrieval
 function showPosition(position) {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
-    initMap(latitude, longitude); // Initialize the map with the location
-    fetchWeather(latitude, longitude); // Fetch weather data
+
+    if (!isNaN(latitude) && !isNaN(longitude)) {
+        initMap(latitude, longitude);
+    } else {
+        console.error('Invalid coordinates');
+    }
 }
 
-// Function to handle errors
 function showError(error) {
     switch (error.code) {
         case error.PERMISSION_DENIED:
@@ -62,15 +63,7 @@ function showError(error) {
     }
 }
 
-// Function to fetch weather data using the coordinates (as shown previously)
-function fetchWeather(lat, lon) {
-    // Your existing fetchWeather code here
-}
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('getLocationButton').addEventListener('click', getLocation);
+});
 
-// Display weather data (as shown previously)
-function displayWeather(data) {
-    // Your existing displayWeather code here
-}
-
-// Set up event listener for the button
-document.getElementById('getLocationButton').addEventListener('click', getLocation);
