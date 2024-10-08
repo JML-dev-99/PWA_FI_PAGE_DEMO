@@ -1,12 +1,12 @@
-﻿self.addEventListener('install', (event) => {
+self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open('my-pwa-cache').then((cache) => {
             return cache.addAll([
-                './index.html',
-                './Css/Mystyle.css',
-                './JS/app.js',
-                './Asset/Icon/icon-192x192.png',
-                './Asset/Icon/icon-512x512.png',
+                '/PWA_FI_PAGE_DEMO/index.html',  // Start from root
+                '/PWA_FI_PAGE_DEMO/Css/Mystyle.css',
+                '/PWA_FI_PAGE_DEMO/JS/app.js',
+                '/PWA_FI_PAGE_DEMO/Asset/Icon/icon-192x192.png',
+                '/PWA_FI_PAGE_DEMO/Asset/Icon/icon-512x512.png',
             ]);
         })
     );
