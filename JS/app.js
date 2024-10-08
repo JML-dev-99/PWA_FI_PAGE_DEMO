@@ -39,6 +39,7 @@ function showPosition(position) {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
 
+    // Ensure valid coordinates
     if (!isNaN(latitude) && !isNaN(longitude)) {
         initMap(latitude, longitude);
     } else {
@@ -63,7 +64,9 @@ function showError(error) {
     }
 }
 
+// Wait for the DOM to fully load before adding event listeners
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('getLocationButton').addEventListener('click', getLocation);
 });
+
 
