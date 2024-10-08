@@ -39,11 +39,13 @@ function showPosition(position) {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
 
-    // Ensure valid coordinates
-    if (!isNaN(latitude) && !isNaN(longitude)) {
+    console.log('Latitude:', latitude);
+    console.log('Longitude:', longitude);
+
+    if (isFinite(latitude) && isFinite(longitude)) {
         initMap(latitude, longitude);
     } else {
-        console.error('Invalid coordinates');
+        console.error('Invalid coordinates:', latitude, longitude);
     }
 }
 
@@ -64,7 +66,6 @@ function showError(error) {
     }
 }
 
-// Wait for the DOM to fully load before adding event listeners
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('getLocationButton').addEventListener('click', getLocation);
 });
