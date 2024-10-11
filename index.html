@@ -141,15 +141,16 @@ shadowRoot.innerHTML = htmlContent;
 
     </script>
 
-    <script>
-        // Select the <material-button id="close-video"> element
-const closeButton = document.querySelector('material-button#close-video');
+<script>
+    class MaterialButton extends HTMLElement {
+        constructor() {
+            super();
 
-// Create an open shadow root
-const shadowRoot = closeButton.attachShadow({ mode: 'open' });
+            // Attach an open shadow DOM
+            const shadowRoot = this.attachShadow({ mode: 'open' });
 
-// Define the HTML and CSS content for the shadow DOM
-const buttonContent = `
+            // Define the styles and button content
+            shadowRoot.innerHTML = `
   <style>
     :host {
       --button-color: transparent;
@@ -293,11 +294,15 @@ const buttonContent = `
     <slot name="right-icon"></slot>
   </button>
 `;
+        }
+    }
 
-// Insert the HTML and CSS content into the shadow root
-shadowRoot.innerHTML = buttonContent;
+    // Register the custom element
+    customElements.define('material-button', MaterialButton);
 
-    </script>
+</script>
+
+
 </body>
 </html>
 
