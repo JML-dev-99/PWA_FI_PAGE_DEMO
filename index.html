@@ -68,7 +68,7 @@ navigator.mediaDevices
   });
     </script> -->
 
-    <!--webcam add shadow-->
+    <!--webcam add shadowroot-->
     <script>
         // Select the <web-cam> element
 const webCam = document.querySelector('web-cam');
@@ -134,7 +134,7 @@ const htmlContent = `
                     </div>
      <div id="video-buttons">
          <material-button id="init-video" raised style>
-                            <i class="material-icons" slot="left-icon">video_call</i>
+                            <i class="material-icons" slot="left-icon" style="font-size: 24px; color: black;">video_call</i>
                         </material-button>
         
         <material-button id="capture-video" raised="" hidden="" style="display: none;">
@@ -270,6 +270,8 @@ const materialButtonContent = `
 
 // Set the inner content of the shadow DOM for <material-button>
 initVideoShadowRoot.innerHTML = materialButtonContent;
+
+
 
 
 // Select the <capture-video> button within the <web-cam> element
@@ -429,8 +431,9 @@ captureVideoShadowRoot.innerHTML = captureVideoShadowContent;
 
 
 
+
 // Select the <start-video> button within the <web-cam> element
-    const startVideoButton = shadowRoot.querySelector('#start-video');
+const startVideoButton = shadowRoot.querySelector('#start-video');
 
 // Create a shadow root for the <start-video> button
 const startVideoShadowRoot = startVideoButton.attachShadow({ mode: 'open' });
