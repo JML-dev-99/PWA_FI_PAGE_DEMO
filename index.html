@@ -270,7 +270,7 @@ initVideoShadowRoot.innerHTML = materialButtonContent;
 
 
 // Select the <capture-video> button within the <web-cam> element
- const captureVideoButton = webCam.querySelector('#capture-video');
+ const captureVideoButton = shadowRoot.querySelector('#capture-video');
 // Create a shadow root for the <capture-video> button
 const captureVideoShadowRoot = captureVideoButton.attachShadow({ mode: 'open' });
 
@@ -427,7 +427,7 @@ captureVideoShadowRoot.innerHTML = captureVideoShadowContent;
 
 
 // Select the <start-video> button within the <web-cam> element
-    const startVideoButton = webCam.querySelector('#start-video');
+    const startVideoButton = shadowRoot.querySelector('#start-video');
 
 // Create a shadow root for the <start-video> button
 const startVideoShadowRoot = startVideoButton.attachShadow({ mode: 'open' });
