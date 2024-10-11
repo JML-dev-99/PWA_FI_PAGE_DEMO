@@ -164,6 +164,7 @@ const initVideoShadowRoot = initVideoButton.attachShadow({ mode: 'open' });
 // Define the inner HTML and styles for the shadow DOM of <material-button>
 const materialButtonContent = `
   <style>
+     /* This is init*/
     :host {
       --button-color: transparent;
       --button-color-hover: #e2e2e2;
@@ -269,14 +270,14 @@ initVideoShadowRoot.innerHTML = materialButtonContent;
 
 
 // Select the <capture-video> button within the <web-cam> element
-    const captureVideoButton = webCam.querySelector('#capture-video');
-
+ const captureVideoButton = webCam.querySelector('#capture-video');
 // Create a shadow root for the <capture-video> button
 const captureVideoShadowRoot = captureVideoButton.attachShadow({ mode: 'open' });
 
 // Define the HTML and CSS content for the shadow DOM of capture-video
 const captureVideoShadowContent = `
   <style>
+     /* This is Capture */
     :host {
       --button-color: transparent;
       --button-color-hover: #e2e2e2;
@@ -423,38 +424,174 @@ const captureVideoShadowContent = `
 // Set the shadow DOM content for capture-video button
 captureVideoShadowRoot.innerHTML = captureVideoShadowContent;
 
-const startVideoButton = webCam.querySelector('#start-video');
 
+
+// Select the <start-video> button within the <web-cam> element
+    const startVideoButton = webCam.querySelector('#start-video');
+
+// Create a shadow root for the <start-video> button
 const startVideoShadowRoot = startVideoButton.attachShadow({ mode: 'open' });
 
+// Define the HTML and CSS content for the shadow DOM of start-video
 const startVideoShadowContent = `
- <style>
+  <style>
+    /* This is start */
+    :host {
+      --button-color: transparent; /* Button's default background color */
+      --button-color-hover: #e2e2e2; /* Hover color when the button is hovered */
+      --font-color: #000000; /* Text color inside the button */
+      --font-size: 1em; /* Font size of the text */
+      --icon-size: 24px; /* Size of the icon */
+      --button-padding: 0 8px 0 8px; /* Padding around the button */
+      --button-padding-circle: 8px; /* Padding for circular buttons */
+      --border-radius: 2px; /* Border radius for rounded corners */
+      display: block;
+      width: fit-content;
+    }
 
+    /* General button styles */
+    button {
+      border: none;
+      border-radius: var(--border-radius); /* Apply border radius from host */
+      min-height: 36px;
+      padding: var(--button-padding); /* Apply padding from host */
+      font-size: var(--font-size);
+      color: var(--font-color); /* Text color */
+      background-color: var(--button-color); /* Background color */
+      cursor: pointer;
+      outline: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
 
-                                @keyframes ripple {
-                                    from {
-                                        width: 0;
-                                        height: 0;
-                                        opacity: 0.8;
-                                    }
+    /* Button hover effect */
+    button:hover {
+      transition: background-color 0.3s ease-out;
+      background-color: var(--button-color-hover); /* Hover background */
+    }
 
-                                    to {
-                                        width: 100px;
-                                        height: 100px;
-                                        opacity: 0.1;
-                                    }
-                                }
-                            </style>
-                            <button type="button">
-                                <div class="ripple"></div>
-                                <slot name="file-input"></slot>
-                                <slot name="left-icon"></slot>
-                                <slot name="toggle-icon"></slot>
-                                <span id="label" style="display: none;"></span>
-                                <slot name="right-icon"></slot>
-                            </button> `;
+    /* Label styling for button */
+    #label {
+      display: inline-block;
+      position: relative;
+      margin-right: 8px;
+      margin-left: 8px;
+    }
 
+    /* If the button has a label attribute, make sure it has a minimum width */
+    :host([label]) button {
+      min-width: 88px;
+    }
+
+    /* Styles when button is raised (with shadow) */
+    :host([raised]) {
+      --button-color: #e2e2e2;
+    }
+
+    :host([raised]) button {
+      background-color: var(--button-color);
+      box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px; /* Box shadow */
+    }
+
+    /* Styles when button is disabled */
+    :host([disabled]) {
+      cursor: not-allowed;
+    }
+
+    :host([disabled]) button {
+      opacity: 0.5;
+      pointer-events: none; /* Disable interaction */
+    }
+
+    /* Ripple effect when button is active */
+    :host([active]) .ripple {
+      animation-name: ripple;
+      animation-duration: 0.4s;
+      animation-timing-function: ease-out;
+      background-color: #808080;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Circular button styles */
+    :host([circle]) button {
+      border-radius: 50%;
+      --button-padding: var(--button-padding-circle); /* Adjust padding for circle */
+    }
+
+    /* Slot styles */
+    ::slotted([slot="left-icon"]) {
+      float: left;
+      font-size: var(--icon-size) !important; /* Apply icon size */
+    }
+
+    ::slotted([slot="toggle-icon"]) {
+      float: left;
+      font-size: var(--icon-size) !important; /* Apply icon size */
+    }
+
+    slot[name="toggle-icon"] {
+      display: none;
+    }
+
+    :host([toggled]) slot[name="left-icon"] {
+      display: none;
+    }
+
+    :host([toggled]) slot[name="toggle-icon"] {
+      display: block;
+    }
+
+    ::slotted([slot="right-icon"]) {
+      float: right;
+      font-size: var(--icon-size) !important; /* Apply icon size */
+    }
+
+    ::slotted([slot="file-input"]) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      opacity: 0;
+      z-index: 9;
+    }
+
+    /* Ripple animation keyframes */
+    @keyframes ripple {
+      from {
+        width: 0;
+        height: 0;
+        opacity: 0.8;
+      }
+
+      to {
+        width: 100px;
+        height: 100px;
+        opacity: 0.1;
+      }
+    }
+  </style>
+
+  <button type="button">
+    <div class="ripple"></div>
+    <slot name="file-input"></slot>
+    <slot name="left-icon"></slot>
+    <slot name="toggle-icon"></slot>
+    <span id="label" style="display: none;"></span>
+    <slot name="right-icon"></slot>
+  </button>
+`;
+
+// Set the shadow DOM content for start-video button
 startVideoShadowRoot.innerHTML = startVideoShadowContent;
+
 
     </script>
 
