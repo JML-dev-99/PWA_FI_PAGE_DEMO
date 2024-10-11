@@ -117,7 +117,19 @@ const htmlContent = `
     }
   </style>
   <div id="container">
-    <!-- Insert additional content like video, camera feeds, etc. here -->
+   <canvas>
+     <div id="video-container">
+                        <video id="front-camera" autoplay="" playsinline=""></video>
+                        <video id="rear-camera" autoplay="" playsinline=""></video>
+                    </div>
+     <div id="preview-container" hidden="">
+                        <video id="preview" playsinline=""></video>
+                        <material-button id="close-video" raised="" hidden="" style="display: none;">
+                         <i class="material-icons" slot="left-icon">clear</i>
+                        </material-button>
+                    </div>
+     <div id="video-buttons">
+        </div>
   </div>
   <material-dialog id="permission-dialog" style="display: none;">
     <!-- Permission dialog content here -->
