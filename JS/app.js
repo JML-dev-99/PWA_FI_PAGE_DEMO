@@ -12,12 +12,21 @@ if ('serviceWorker' in navigator) {
 }
 
 let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
 
-// Check if the app is installable (PWA)
-window.addEventListener('load', () => {
-    const installBtn = document.getElementById('installBtn');
-    
+// Ensure the button is always visible
+installBtn.style.display = 'block';
+
+// Listen for the beforeinstallprompt event
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the mini-infobar from appearing
+    e.preventDefault();
+    // Save the event for later use
+    deferredPrompt = e;
+
+    // When the button is clicked, show the install prompt
     installBtn.addEventListener('click', () => {
+        // If the install prompt is available
         if (deferredPrompt) {
             deferredPrompt.prompt(); // Show the install prompt
             deferredPrompt.userChoice.then((choiceResult) => {
@@ -26,18 +35,16 @@ window.addEventListener('load', () => {
                 } else {
                     console.log('User dismissed the install prompt');
                 }
-                deferredPrompt = null; // Reset the deferred prompt
+                deferredPrompt = null; // Reset after the prompt is shown
             });
         } else {
-            alert('App not ready for installation.');
+            console.log('Install prompt not available');
         }
     });
 });
 
-// Listen for the beforeinstallprompt event
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e; // Save the event for later use
-    console.log('Install prompt is available');
+// Optional: Listen for the appinstalled event
+window.addEventListener('appinstalled', () => {
+    console.log('PWA has been installed');
+    installBtn.style.display = 'none'; // Hide the button after installation
 });
-
