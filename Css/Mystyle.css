@@ -63,6 +63,8 @@ h1 {
     display: none; /* Hide by default */
     width: 755.6px; /* Desired width */
     height: 485px; /* Desired height */
+    z-index: -2;
+    position: absolute;
 }
 
 /* Styles for the modal */
