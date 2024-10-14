@@ -6,9 +6,9 @@ h1 {
 
 .GoogleMap {
     height: 50%;
-    width: 95%;
-    margin: 0 auto;
-    top: 10rem;
+    width: 36%;
+    min-width: 7rem;
+    min-height: 30rem;
 }
 
 #installButton {
