@@ -12,39 +12,36 @@ if ('serviceWorker' in navigator) {
 }
 
 let deferredPrompt;
-const installBtn = document.getElementById('installBtn');
 
-// Ensure the button is always visible
-installBtn.style.display = 'block';
-
-// Listen for the beforeinstallprompt event
 window.addEventListener('beforeinstallprompt', (e) => {
-    // Prevent the mini-infobar from appearing
+    // Prevent the default mini-info bar from appearing
     e.preventDefault();
-    // Save the event for later use
+    // Stash the event so it can be triggered later
     deferredPrompt = e;
 
-    // When the button is clicked, show the install prompt
-    installBtn.addEventListener('click', () => {
-        // If the install prompt is available
-        if (deferredPrompt) {
-            deferredPrompt.prompt(); // Show the install prompt
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('User accepted the install prompt');
-                } else {
-                    console.log('User dismissed the install prompt');
-                }
-                deferredPrompt = null; // Reset after the prompt is shown
-            });
-        } else {
-            console.log('Install prompt not available');
-        }
+    // Show the install button
+    const installButton = document.getElementById('installButton');
+    installButton.style.display = 'block'; // Show the button
+
+    installButton.addEventListener('click', () => {
+        // Hide the install button
+        installButton.style.display = 'none';
+        // Show the install prompt
+        deferredPrompt.prompt();
+        // Wait for the user to respond to the prompt
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the A2HS prompt');
+            } else {
+                console.log('User dismissed the A2HS prompt');
+            }
+            deferredPrompt = null; // Clear the deferred prompt
+        });
     });
 });
 
-// Optional: Listen for the appinstalled event
+// Optional: hide the install button after the PWA has been installed
 window.addEventListener('appinstalled', () => {
-    console.log('PWA has been installed');
-    installBtn.style.display = 'none'; // Hide the button after installation
+    const installButton = document.getElementById('installButton');
+    installButton.style.display = 'none'; // Hide the button after installation
 });

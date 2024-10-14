@@ -11,18 +11,21 @@ h1 {
     top: 10rem;
 }
 
-#install-btn {
-    display: none; /* Hidden by default */
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    background-color: #4CAF50;
+#installButton {
+    background-color: #317EFB;
     color: white;
     border: none;
+    padding: 10px 20px;
+    font-size: 16px;
     border-radius: 5px;
     cursor: pointer;
+    display: none; /* Initially hidden */
 }
+
+#installButton:hover {
+    background-color: #245cb5;
+}
+
 
 .VideoOnly
 {
