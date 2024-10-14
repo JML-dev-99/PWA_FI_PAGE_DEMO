@@ -1,9 +1,23 @@
 //This statement/condition connect service-work.js
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./JS/service-worker.js') 
+        navigator.serviceWorker.register('./JS/service-worker.js')
             .then((registration) => {
                 console.log('Service Worker registered with scope:', registration.scope);
+
+                // Check for updates
+                registration.onupdatefound = () => {
+                    const installingWorker = registration.installing;
+
+                    installingWorker.onstatechange = () => {
+                        if (installingWorker.state === 'installed') {
+                            if (navigator.serviceWorker.controller) {
+                                // New version available
+                                alert('A new version of the app is available. Refresh the page to update.');
+                            }
+                        }
+                    };
+                };
             })
             .catch((error) => {
                 console.error('Service Worker registration failed:', error);
@@ -11,6 +25,7 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+//install button here
 let deferredPrompt;
 
 window.addEventListener('beforeinstallprompt', (e) => {
