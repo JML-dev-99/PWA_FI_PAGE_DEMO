@@ -45,3 +45,8 @@ window.addEventListener('appinstalled', () => {
     const installButton = document.getElementById('installButton');
     installButton.style.display = 'none'; // Hide the button after installation
 });
+
+// Ensure the script runs after the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', (event) => {
+    console.log('DOM fully loaded and parsed');
+});
