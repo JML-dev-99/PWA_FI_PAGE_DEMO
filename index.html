@@ -59,6 +59,7 @@
 
     <script>
       
+   
     let stream = null; // Store the active stream
     let currentCamera = 'user'; // Default to the front camera (facingMode: "user")
 
@@ -88,24 +89,38 @@
         }
     }
 
-    // Function to switch between front and rear cameras
+    // Function to switch between front and rear cameras with animation
     function toggleCamera() {
         const videoContainer = document.getElementById('video-container');
         const frontCamera = document.getElementById('front-camera');
         const rearCamera = document.getElementById('rear-camera');
 
         if (currentCamera === 'user') {
-            // Switch to the rear camera
-            currentCamera = 'environment';
-            videoContainer.classList.add('rear-view'); // Add rear-view class to the container
-            frontCamera.style.display = 'none'; // Hide front camera
-            rearCamera.style.display = 'block'; // Show rear camera
+            // Switch to the rear camera with animation
+            frontCamera.classList.add('fade-out');
+            rearCamera.classList.add('fade-in');
+
+            setTimeout(() => {
+                currentCamera = 'environment';
+                videoContainer.classList.add('rear-view'); // Add rear-view class to the container
+                frontCamera.style.display = 'none'; // Hide front camera after fade-out
+                rearCamera.style.display = 'block'; // Show rear camera
+                frontCamera.classList.remove('fade-out');
+                rearCamera.classList.remove('fade-in');
+            }, 500); // Wait for animation to complete
         } else {
-            // Switch back to the front camera
-            currentCamera = 'user';
-            videoContainer.classList.remove('rear-view'); // Remove rear-view class from the container
-            frontCamera.style.display = 'block'; // Show front camera
-            rearCamera.style.display = 'none'; // Hide rear camera
+            // Switch back to the front camera with animation
+            rearCamera.classList.add('fade-out');
+            frontCamera.classList.add('fade-in');
+
+            setTimeout(() => {
+                currentCamera = 'user';
+                videoContainer.classList.remove('rear-view'); // Remove rear-view class from the container
+                rearCamera.style.display = 'none'; // Hide rear camera after fade-out
+                frontCamera.style.display = 'block'; // Show front camera
+                rearCamera.classList.remove('fade-out');
+                frontCamera.classList.remove('fade-in');
+            }, 500); // Wait for animation to complete
         }
     }
 
@@ -139,14 +154,13 @@
 
     // Toggle between cameras when clicking the toggle button
     document.getElementById('toggle-camera').addEventListener('click', () => {
-        toggleCamera(); // Toggle between front and rear cameras
+        toggleCamera(); // Toggle between front and rear cameras with animation
     });
 
     // Stop the video when clicking the stop button
     document.getElementById('stop-video').addEventListener('click', () => {
         stopVideo(); // Stop the video stream
     });
-
 
 
   </script>

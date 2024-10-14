@@ -67,6 +67,33 @@ h1 {
     position: absolute;
 }
 
+#front-camera,
+#rear-camera {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    opacity: 0;
+    transform: scale(0.9);
+    display: none;
+}
+
+/* When a camera is active (visible) */
+#front-camera.initialized,
+#rear-camera.initialized {
+    opacity: 1;
+    transform: scale(1);
+    display: block;
+}
+
+/* Animation when switching cameras */
+.fade-out {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.fade-in {
+    opacity: 1;
+    transform: scale(1);
+}
+
 /* Styles for the modal */
 .modal {
     display: none; /* Hidden by default */
