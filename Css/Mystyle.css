@@ -4,7 +4,7 @@ h1 {
     color:red;
 }
 
-.GoogleMap {
+.GoogleMap, #map{
     height: 50%;
     width: 36%;
     min-width: 7rem;
