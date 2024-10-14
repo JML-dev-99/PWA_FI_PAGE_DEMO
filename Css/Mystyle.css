@@ -1,10 +1,81 @@
 ﻿
+
 h1 {
-    color:red !important;
+    color:red;
 }
 
-.GoogleMap
+.GoogleMap {
+    height: 50%;
+    width: 95%;
+    margin: 0 auto;
+    top: 10rem;
+}
+
+#install-btn {
+    display: none; /* Hidden by default */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.VideoOnly
 {
+    height:auto;
+}
+
+#video-buttons {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    z-index: 3;
+}
+
+#video-container {
+    height: 450px !important;
+    height: var(--video-height);
+    max-height: var(--video-height);
+    /* transform-style: preserve-3d; */
+    transform-origin: center left;
+    transition: transform 0.8s ease-out;
+}
+
+#container {
+    width: 50% !important;
+    width: var(--video-width);
+    position: relative;
+    background-color: #cccccc;
+    perspective: 300px;
+}
+
+.content {
+    padding:15px;
+}
+
+#front-camera, #rear-camera {
+    display: none; /* Hide by default */
+    width: 729.6px; /* Desired width */
+    height: 485px; /* Desired height */
+}
+
+/* Styles for the modal */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
     height: 100%;
-    width: 400px;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 20px;
+    text-align: center;
 }

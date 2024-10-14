@@ -5,28 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="json/Manifest.json">
     <link rel="stylesheet" href="Css/Mystyle.css">
+    <title>Fusion Insights</title>
+    <!--Boostrap Link-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!--Google Map Link-->
   <script async src="https://maps.googleapis.com/maps/api/js?key=Your-Api-Key&loading=async&libraries=maps&callback=initMap"></script>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!--Icon Media_Capture link Link-->
+   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script type="module" src="https://unpkg.com/@material/mwc-button@mwc-2.0.0/mwc-button.js"></script>
-
-
-    <title>Fusion Insights</title>
 </head>
 <body>
+
+  <div class="content container-fluid">
     <div class="container-fluid"><h1>Welcome to Fusion Insights </h1></div>
     <button id="install-btn">Install App</button>
     <div class="GoogleMap" id="map"></div>
 
     <section class="VideoOnly">
-        <web-cam>
-        </web-cam>
-    </section>
+      <web-cam>
+          <div id="container">
+              <div id="video-container">
+                  <video id="front-camera" autoplay="" playsinline=""></video>
+                  <video id="rear-camera" autoplay="" playsinline=""></video>
+              </div>
+              <div id="preview-container"></div>
+              <div id="video-buttons"></div>
+              <button id="init-video">
+                  <i class="material-icons">video_call</i>
+              </button>
+              <button>
+                  <i class="material-icons">switch_video</i>
+              </button>
+              <button>
+                  <i class="material-icons">power_settings_new</i>
+              </button>
 
+          </div>
+      </web-cam>
+  </section>
+  <div id="modal" class="modal">
+      <p>No access to Media</p>
+      <button id="close-modal">Close</button>
+  </div>
 
-
-    <!-- <video width="320" height="240" controls> </video>-->
+  </div>
       
 
 
@@ -34,734 +57,43 @@
     <script src="JS/app.js"></script>  
     <script src="JS/Gmap.js"></script>
 
-    <!-- <script>
-        // Put variables in global scope to make them available to the browser console.
-const video = document.querySelector("video");
-const constraints = {
-  audio: false,
-  video: true,
-};
-
-navigator.mediaDevices
-  .getUserMedia(constraints)
-  .then((stream) => {
-    const videoTracks = stream.getVideoTracks();
-    console.log("Got stream with constraints:", constraints);
-    console.log(`Using video device: ${videoTracks[0].label}`);
-    stream.onremovetrack = () => {
-      console.log("Stream ended");
-    };
-    video.srcObject = stream;
-  })
-  .catch((error) => {
-    if (error.name === "OverconstrainedError") {
-      console.error(
-        `The resolution ${constraints.video.width.exact}x${constraints.video.height.exact} px is not supported by your device.`,
-      );
-    } else if (error.name === "NotAllowedError") {
-      console.error(
-        "You need to grant this page permission to access your camera and microphone.",
-      );
-    } else {
-      console.error(`getUserMedia error: ${error.name}`, error);
-    }
-  });
-    </script> -->
-
-    <!--webcam add shadowroot-->
     <script>
-        // Select the <web-cam> element
-const webCam = document.querySelector('web-cam');
+      // Function to initialize video stream
+      async function initVideo() {
+          try {
+              // Request access to the front camera
+              const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
 
-// Create a shadow root (open)
-const shadowRoot = webCam.attachShadow({ mode: 'open' });
+              // Get the video element
+              const videoElement = document.getElementById('front-camera');
 
-// Define the HTML and CSS content
-const htmlContent = `
-  <style>
-    :host {
-      display: block;
-      --video-width: 100%;
-      --video-height: 300px;
-    }
-
-    @media screen and (min-width: 1024px) {
-      :host {
-        --video-width: 50%;
-        --video-height: 450px;
-      }
-    }
-
-    #container {
-      position: relative;
-      width: var(--video-width);
-      background-color: #cccccc;
-      perspective: 300px;
-    }
-
-    #video-container {
-      height: var(--video-height);
-      max-height: var(--video-height);
-      transform-style: preserve-3d;
-      transform-origin: center left;
-      transition: transform 0.8s ease-out;
-    }
-
-    #video-buttons {
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      display: flex;
-      z-index: 3;
-    }
-
-    material-button {
-      cursor: pointer;
-      display: block;
-    }
-  </style>
-  <div id="container">
-   <canvas>
-     <div id="video-container">
-                        <video id="front-camera" autoplay="" playsinline=""></video>
-                        <video id="rear-camera" autoplay="" playsinline=""></video>
-                    </div>
-     <div id="preview-container" hidden>
-                        <video id="preview" playsinline=""></video>
-                        <material-button id="close-video" raised="" hidden="" style="display: none;">
-                         <i class="material-icons" slot="left-icon">clear</i>
-                        </material-button>
-                    </div>
-     <div id="video-buttons">
-         <material-button id="init-video" raised style>
-                            <i class="material-icons" slot="left-icon" style="font-size: 24px; color: black;">video_call</i>
-                        </material-button>
-        
-        <material-button id="capture-video" raised="" hidden="" style="display: none;">
-                            <i class="material-icons" slot="left-icon">video_call</i>
-                            <input type="file" slot="file-input" id="video-input" accept="video/*" capture="">
-                        </material-button>
-
-        <material-button id="start-video" raised="" hidden="" style="display: none;">
-                            <i class="material-icons" slot="left-icon">videocam</i>
-                        </material-button>
-        </div>
-  </div>
-  <material-dialog id="permission-dialog" style="display: none;">
-    <!-- Permission dialog content here -->
-  </material-dialog>
-`;
-
-// Insert the HTML content into the shadow root
-shadowRoot.innerHTML = htmlContent;
-
-
-
-
-
-
-
-    const initVideoButton = shadowRoot.querySelector('#init-video');
-const initVideoShadowRoot = initVideoButton.attachShadow({ mode: 'open' });
-
-
-const materialButtonContent = `
-  <style>
-     /* This is init*/
-    :host {
-      --button-color: transparent;
-      --button-color-hover: #e2e2e2;
-      --font-color: #000000;
-      --font-size: 1em;
-      --icon-size: 24px;
-      --button-padding: 0 8px 0 8px;
-      --button-padding-circle: 8px;
-      --border-radius: 2px;
-      display: block;
-      width: fit-content;
-    }
-
-    button {
-      border: none;
-      border-radius: var(--border-radius);
-      min-height: 36px;
-      padding: var(--button-padding);
-      font-size: var(--font-size);
-      color: var(--font-color);
-      background-color: var(--button-color);
-      cursor: pointer;
-      outline: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    button:hover {
-      transition: background-color 0.3s ease-out;
-      background-color: var(--button-color-hover);
-    }
-
-    #label {
-      display: inline-block;
-      position: relative;
-      margin-right: 8px;
-      margin-left: 8px;
-    }
-
-    :host([label]) button {
-      min-width: 88px;
-    }
-
-    :host([raised]) {
-      --button-color: #e2e2e2;
-    }
-
-    :host([raised]) button {
-      background-color: var(--button-color);
-      box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
-    }
-
-    :host([disabled]) {
-      cursor: not-allowed;
-    }
-
-    :host([disabled]) button {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-
-    .ripple {
-      animation-name: ripple;
-      animation-duration: 0.4s;
-      animation-timing-function: ease-out;
-      background-color: #808080;
-      border-radius: 50%;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    @keyframes ripple {
-      from {
-        width: 0;
-        height: 0;
-        opacity: 0.8;
-      }
-      to {
-        width: 100px;
-        height: 100px;
-        opacity: 0.1;
-      }
-    }
-  </style>
-
-  <button type="button">
-    <div class="ripple"></div>
-    <slot name="file-input"></slot>
-    <slot name="left-icon"></slot>
-    <slot name="toggle-icon"></slot>
-    <span id="label" style="display: none;"></span>
-    <slot name="right-icon"></slot>
-  </button>
-`;
-
-// Set the inner content of the shadow DOM for <material-button>
-initVideoShadowRoot.innerHTML = materialButtonContent;
-
-
-
-
-// Select the <capture-video> button within the <web-cam> element
- const captureVideoButton = shadowRoot.querySelector('#capture-video');
-// Create a shadow root for the <capture-video> button
-const captureVideoShadowRoot = captureVideoButton.attachShadow({ mode: 'open' });
-
-// Define the HTML and CSS content for the shadow DOM of capture-video
-const captureVideoShadowContent = `
-  <style>
-     /* This is Capture */
-    :host {
-      --button-color: transparent;
-      --button-color-hover: #e2e2e2;
-      --font-color: #000000;
-      --font-size: 1em;
-      --icon-size: 24px;
-      --button-padding: 0 8px 0 8px;
-      --button-padding-circle: 8px;
-      --border-radius: 2px;
-      display: block;
-      width: fit-content;
-    }
-
-    button {
-      border: none;
-      border-radius: var(--border-radius);
-      min-height: 36px;
-      padding: var(--button-padding);
-      font-size: var(--font-size);
-      color: var(--font-color);
-      background-color: var(--button-color);
-      cursor: pointer;
-      outline: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    button:hover {
-      transition: background-color 0.3s ease-out;
-      background-color: var(--button-color-hover);
-    }
-
-    #label {
-      display: inline-block;
-      position: relative;
-      margin-right: 8px;
-      margin-left: 8px;
-    }
-
-    :host([label]) button {
-      min-width: 88px;
-    }
-
-    :host([raised]) {
-      --button-color: #e2e2e2;
-    }
-
-    :host([raised]) button {
-      background-color: var(--button-color);
-      box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
-    }
-
-    :host([disabled]) {
-      cursor: not-allowed;
-    }
-
-    :host([disabled]) button {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-
-    :host([active]) .ripple {
-      animation-name: ripple;
-      animation-duration: 0.4s;
-      animation-timing-function: ease-out;
-      background-color: #808080;
-      border-radius: 50%;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    :host([circle]) button {
-      border-radius: 50%;
-      --button-padding: var(--button-padding-circle);
-    }
-
-    ::slotted([slot="left-icon"]) {
-      float: left;
-      font-size: var(--icon-size) !important;
-    }
-
-    ::slotted([slot="toggle-icon"]) {
-      float: left;
-      font-size: var(--icon-size) !important;
-    }
-
-    slot[name="toggle-icon"] {
-      display: none;
-    }
-
-    :host([toggled]) slot[name="left-icon"] {
-      display: none;
-    }
-
-    :host([toggled]) slot[name="toggle-icon"] {
-      display: block;
-    }
-
-    ::slotted([slot="right-icon"]) {
-      float: right;
-      font-size: var(--icon-size) !important;
-    }
-
-    ::slotted([slot="file-input"]) {
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      opacity: 0;
-      z-index: 9;
-    }
-
-    @keyframes ripple {
-      from {
-        width: 0;
-        height: 0;
-        opacity: 0.8;
+              // Set the video source to the stream and show the video
+              videoElement.srcObject = stream;
+              videoElement.style.display = 'block'; // Show the front camera video
+              videoElement.classList.add('initialized'); // Add 'initialized' class
+          } catch (error) {
+              // If permission is denied, show the modal
+              showModal();
+          }
       }
 
-      to {
-        width: 100px;
-        height: 100px;
-        opacity: 0.1;
-      }
-    }
-  </style>
-
-  <button type="button">
-    <div class="ripple"></div>
-    <slot name="file-input"></slot>
-    <slot name="left-icon"></slot>
-    <slot name="toggle-icon"></slot>
-    <span id="label" style="display: none;"></span>
-    <slot name="right-icon"></slot>
-  </button>
-`;
-
-// Set the shadow DOM content for capture-video button
-captureVideoShadowRoot.innerHTML = captureVideoShadowContent;
-
-
-
-
-// Select the <start-video> button within the <web-cam> element
-const startVideoButton = shadowRoot.querySelector('#start-video');
-
-// Create a shadow root for the <start-video> button
-const startVideoShadowRoot = startVideoButton.attachShadow({ mode: 'open' });
-
-// Define the HTML and CSS content for the shadow DOM of start-video
-const startVideoShadowContent = `
-  <style>
-    /* This is start */
-    :host {
-      --button-color: transparent; /* Button's default background color */
-      --button-color-hover: #e2e2e2; /* Hover color when the button is hovered */
-      --font-color: #000000; /* Text color inside the button */
-      --font-size: 1em; /* Font size of the text */
-      --icon-size: 24px; /* Size of the icon */
-      --button-padding: 0 8px 0 8px; /* Padding around the button */
-      --button-padding-circle: 8px; /* Padding for circular buttons */
-      --border-radius: 2px; /* Border radius for rounded corners */
-      display: block;
-      width: fit-content;
-    }
-
-    /* General button styles */
-    button {
-      border: none;
-      border-radius: var(--border-radius); /* Apply border radius from host */
-      min-height: 36px;
-      padding: var(--button-padding); /* Apply padding from host */
-      font-size: var(--font-size);
-      color: var(--font-color); /* Text color */
-      background-color: var(--button-color); /* Background color */
-      cursor: pointer;
-      outline: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Button hover effect */
-    button:hover {
-      transition: background-color 0.3s ease-out;
-      background-color: var(--button-color-hover); /* Hover background */
-    }
-
-    /* Label styling for button */
-    #label {
-      display: inline-block;
-      position: relative;
-      margin-right: 8px;
-      margin-left: 8px;
-    }
-
-    /* If the button has a label attribute, make sure it has a minimum width */
-    :host([label]) button {
-      min-width: 88px;
-    }
-
-    /* Styles when button is raised (with shadow) */
-    :host([raised]) {
-      --button-color: #e2e2e2;
-    }
-
-    :host([raised]) button {
-      background-color: var(--button-color);
-      box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px; /* Box shadow */
-    }
-
-    /* Styles when button is disabled */
-    :host([disabled]) {
-      cursor: not-allowed;
-    }
-
-    :host([disabled]) button {
-      opacity: 0.5;
-      pointer-events: none; /* Disable interaction */
-    }
-
-    /* Ripple effect when button is active */
-    :host([active]) .ripple {
-      animation-name: ripple;
-      animation-duration: 0.4s;
-      animation-timing-function: ease-out;
-      background-color: #808080;
-      border-radius: 50%;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    /* Circular button styles */
-    :host([circle]) button {
-      border-radius: 50%;
-      --button-padding: var(--button-padding-circle); /* Adjust padding for circle */
-    }
-
-    /* Slot styles */
-    ::slotted([slot="left-icon"]) {
-      float: left;
-      font-size: var(--icon-size) !important; /* Apply icon size */
-    }
-
-    ::slotted([slot="toggle-icon"]) {
-      float: left;
-      font-size: var(--icon-size) !important; /* Apply icon size */
-    }
-
-    slot[name="toggle-icon"] {
-      display: none;
-    }
-
-    :host([toggled]) slot[name="left-icon"] {
-      display: none;
-    }
-
-    :host([toggled]) slot[name="toggle-icon"] {
-      display: block;
-    }
-
-    ::slotted([slot="right-icon"]) {
-      float: right;
-      font-size: var(--icon-size) !important; /* Apply icon size */
-    }
-
-    ::slotted([slot="file-input"]) {
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      opacity: 0;
-      z-index: 9;
-    }
-
-    /* Ripple animation keyframes */
-    @keyframes ripple {
-      from {
-        width: 0;
-        height: 0;
-        opacity: 0.8;
+      // Function to show the modal
+      function showModal() {
+          const modal = document.getElementById('modal');
+          modal.style.display = 'block'; // Show the modal
       }
 
-      to {
-        width: 100px;
-        height: 100px;
-        opacity: 0.1;
-      }
-    }
-  </style>
+      // Close modal button event listener
+      document.getElementById('close-modal').addEventListener('click', () => {
+          const modal = document.getElementById('modal');
+          modal.style.display = 'none'; // Hide the modal
+      });
 
-  <button type="button">
-    <div class="ripple"></div>
-    <slot name="file-input"></slot>
-    <slot name="left-icon"></slot>
-    <slot name="toggle-icon"></slot>
-    <span id="label" style="display: none;"></span>
-    <slot name="right-icon"></slot>
-  </button>
-`;
-
-// Set the shadow DOM content for start-video button
-startVideoShadowRoot.innerHTML = startVideoShadowContent;
-
-
-    </script>
-
-     <!--close button add shadow-->
-<script>
-    class MaterialButton extends HTMLElement {
-        constructor() {
-            super();
-
-            // Attach an open shadow DOM
-            const shadowRoot = this.attachShadow({ mode: 'open' });
-
-            // Define the styles and button content
-            shadowRoot.innerHTML = `
-  <style>
-    :host {
-      --button-color: transparent;
-      --button-color-hover: #e2e2e2;
-      --font-color: #000000;
-      --font-size: 1em;
-      --icon-size: 24px;
-      --button-padding: 0 8px 0 8px;
-      --button-padding-circle: 8px;
-      --border-radius: 2px;
-      display: block;
-      width: fit-content;
-    }
-
-    button {
-      border: none;
-      border-radius: var(--border-radius);
-      min-height: 36px;
-      padding: var(--button-padding);
-      font-size: var(--font-size);
-      color: var(--font-color);
-      background-color: var(--button-color);
-      cursor: pointer;
-      outline: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    button:hover {
-      transition: background-color 0.3s ease-out;
-      background-color: var(--button-color-hover);
-    }
-
-    #label {
-      display: inline-block;
-      position: relative;
-      margin-right: 8px;
-      margin-left: 8px;
-    }
-
-    :host([label]) button {
-      min-width: 88px;
-    }
-
-    :host([raised]) {
-      --button-color: #e2e2e2;
-    }
-
-    :host([raised]) button {
-      background-color: var(--button-color);
-      box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
-    }
-
-    :host([disabled]) {
-      cursor: not-allowed;
-    }
-
-    :host([disabled]) button {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-
-    :host([active]) .ripple {
-      animation-name: ripple;
-      animation-duration: 0.4s;
-      animation-timing-function: ease-out;
-      background-color: #808080;
-      border-radius: 50%;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    :host([circle]) button {
-      border-radius: 50%;
-      --button-padding: var(--button-padding-circle);
-    }
-
-    ::slotted([slot="left-icon"]) {
-      float: left;
-      font-size: var(--icon-size) !important;
-    }
-
-    ::slotted([slot="toggle-icon"]) {
-      float: left;
-      font-size: var(--icon-size) !important;
-    }
-
-    slot[name="toggle-icon"] {
-      display: none;
-    }
-
-    :host([toggled]) slot[name="left-icon"] {
-      display: none;
-    }
-
-    :host([toggled]) slot[name="toggle-icon"] {
-      display: block;
-    }
-
-    ::slotted([slot="right-icon"]) {
-      float: right;
-      font-size: var(--icon-size) !important;
-    }
-
-    ::slotted([slot="file-input"]) {
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      opacity: 0;
-      z-index: 9;
-    }
-
-    @keyframes ripple {
-      from {
-        width: 0;
-        height: 0;
-        opacity: 0.8;
-      }
-
-      to {
-        width: 100px;
-        height: 100px;
-        opacity: 0.1;
-      }
-    }
-  </style>
-
-  <button type="button">
-    <div class="ripple"></div>
-    <slot name="file-input"></slot>
-    <slot name="left-icon"></slot>
-    <slot name="toggle-icon"></slot>
-    <span id="label" style="display: none;"></span>
-    <slot name="right-icon"></slot>
-  </button>
-`;
-        }
-    }
-
-    // Register the custom element
-    customElements.define('material-button', MaterialButton);
-
-</script>
+      // Event listener for the button
+      document.getElementById('init-video').addEventListener('click', () => {
+          initVideo(); // Directly call initVideo when the button is clicked
+      });
+  </script>
 
 
 </body>
