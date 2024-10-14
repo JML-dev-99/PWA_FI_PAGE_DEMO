@@ -58,46 +58,6 @@
     <script src="JS/Gmap.js"></script>
 
     <script>
-      // Function to initialize video stream
-      async function initVideo() {
-          try {
-              // Request access to the front camera
-              const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-
-              // Get the video element
-              const videoElement = document.getElementById('front-camera');
-
-              // Set the video source to the stream and show the video
-              videoElement.srcObject = stream;
-              videoElement.style.display = 'block'; // Show the front camera video
-              videoElement.classList.add('initialized'); // Add 'initialized' class
-          } catch (error) {
-              // If permission is denied, show the modal
-              showModal();
-          }
-      }
-
-      // Function to show the modal
-      function showModal() {
-          const modal = document.getElementById('modal');
-          modal.style.display = 'block'; // Show the modal
-      }
-
-      // Close modal button event listener
-      document.getElementById('close-modal').addEventListener('click', () => {
-          const modal = document.getElementById('modal');
-          modal.style.display = 'none'; // Hide the modal
-      });
-
-      // Event listener for the button
-      document.getElementById('init-video').addEventListener('click', () => {
-          initVideo(); // Directly call initVideo when the button is clicked
-      });
-
-
-
-
-   
       
     let stream = null; // Store the active stream
     let currentCamera = 'user'; // Default to the front camera (facingMode: "user")
