@@ -98,40 +98,54 @@
 
 
    
-    let currentCamera = 'user'; // Default to the front camera (facingMode: "user")
+      
     let stream = null; // Store the active stream
+    let currentCamera = 'user'; // Default to the front camera (facingMode: "user")
 
-    // Function to initialize video stream
-    async function initVideo(facingMode = 'user') {
+    // Function to initialize video stream for both cameras
+    async function initVideo() {
         try {
-            // Stop any existing video stream
-            if (stream) {
-                stopVideo();
-            }
+            // Request access to the front camera (facingMode: "user")
+            stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentCamera } });
 
-            // Request access to the camera with the desired facing mode
-            stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode } });
-            
             // Get the video elements
             const frontCamera = document.getElementById('front-camera');
             const rearCamera = document.getElementById('rear-camera');
 
-            // Depending on the facingMode, assign the stream to the correct video element
-            if (facingMode === 'user') {
-                frontCamera.srcObject = stream;
-                frontCamera.style.display = 'block';
-                rearCamera.style.display = 'none';
-                frontCamera.classList.add('initialized');
-                rearCamera.classList.remove('initialized');
-            } else {
-                rearCamera.srcObject = stream;
-                rearCamera.style.display = 'block';
-                frontCamera.style.display = 'none';
-                rearCamera.classList.add('initialized');
-                frontCamera.classList.remove('initialized');
-            }
+            // Assign the stream to the front camera video element
+            frontCamera.srcObject = stream;
+            rearCamera.srcObject = stream;
+
+            // Add the 'initialized' class to both cameras
+            frontCamera.classList.add('initialized');
+            rearCamera.classList.add('initialized');
+
+            // Display the front camera by default, and hide the rear camera
+            frontCamera.style.display = 'block';
+            rearCamera.style.display = 'none';
         } catch (error) {
             showModal(); // If permission is denied, show the modal
+        }
+    }
+
+    // Function to switch between front and rear cameras
+    function toggleCamera() {
+        const videoContainer = document.getElementById('video-container');
+        const frontCamera = document.getElementById('front-camera');
+        const rearCamera = document.getElementById('rear-camera');
+
+        if (currentCamera === 'user') {
+            // Switch to the rear camera
+            currentCamera = 'environment';
+            videoContainer.classList.add('rear-view'); // Add rear-view class to the container
+            frontCamera.style.display = 'none'; // Hide front camera
+            rearCamera.style.display = 'block'; // Show rear camera
+        } else {
+            // Switch back to the front camera
+            currentCamera = 'user';
+            videoContainer.classList.remove('rear-view'); // Remove rear-view class from the container
+            frontCamera.style.display = 'block'; // Show front camera
+            rearCamera.style.display = 'none'; // Hide rear camera
         }
     }
 
@@ -142,6 +156,14 @@
             tracks.forEach(track => track.stop()); // Stop all tracks
         }
         stream = null;
+
+        // Hide both cameras
+        document.getElementById('front-camera').style.display = 'none';
+        document.getElementById('rear-camera').style.display = 'none';
+
+        // Remove the 'initialized' class from both cameras
+        document.getElementById('front-camera').classList.remove('initialized');
+        document.getElementById('rear-camera').classList.remove('initialized');
     }
 
     // Function to show the modal
@@ -150,26 +172,21 @@
         modal.style.display = 'block'; // Show the modal
     }
 
-    // Toggle between front and rear camera
-    document.getElementById('toggle-camera').addEventListener('click', () => {
-        // Switch the camera between front ("user") and rear ("environment")
-        currentCamera = currentCamera === 'user' ? 'environment' : 'user';
-        initVideo(currentCamera); // Initialize the video with the new camera
-    });
-
-    // Initialize video on clicking the start button
+    // Initialize the video on clicking the start button
     document.getElementById('init-video').addEventListener('click', () => {
-        initVideo(currentCamera); // Start with the front camera by default
+        initVideo(); // Start the video stream
     });
 
-    // Stop video on clicking the stop button
+    // Toggle between cameras when clicking the toggle button
+    document.getElementById('toggle-camera').addEventListener('click', () => {
+        toggleCamera(); // Toggle between front and rear cameras
+    });
+
+    // Stop the video when clicking the stop button
     document.getElementById('stop-video').addEventListener('click', () => {
         stopVideo(); // Stop the video stream
-        document.getElementById('front-camera').style.display = 'none';
-        document.getElementById('rear-camera').style.display = 'none';
-        document.getElementById('front-camera').classList.remove('initialized');
-        document.getElementById('rear-camera').classList.remove('initialized');
     });
+
 
 
   </script>
