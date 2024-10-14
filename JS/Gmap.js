@@ -1,43 +1,42 @@
+let map, marker, infoWindow, watchId;
 
-let map;
-let infoWindow;
-let marker;
-
-
-//call importLibrary() inside async function
 async function initMap() {
     const { Map } = await google.maps.importLibrary("maps");
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
-    //API key cannot use AdvancedMarkerElement
-     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-
-    map = new Map (document.getElementById("map"), {
+    map = new Map(document.getElementById("map"), {
         center: { lat: -34.397, lng: 150.644 },
-        zoom: 8,
+        zoom: 15,
     });
 
-    infoWindow = new google.maps.InfoWindow(), 
+    infoWindow = new google.maps.InfoWindow();
 
+    marker = new google.maps.Marker({
+        position: { lat: -34.397, lng: 150.644 },
+        map: map,
+        title: "Your Location"
+    });
 
-     marker = new google.maps.Marker({
-         position: { lat: -34.397, lng: 150.644 },
-         map: map,
-        title: "default location"
-     });
-
+    document.getElementById("locateButton").addEventListener("click", () => {
+        getLocation();
+    });
 }
 
-initMap();
+function getLocation() {
+    const options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
+    };
 
+    if (navigator.geolocation) {
+        // Start watching the user's location
+        watchId = navigator.geolocation.watchPosition(success, error, options);
+    } else {
+        handleLocationError(false, infoWindow, map.getCenter());
+    }
+}
 
-
-const options = {
-    enableHighAccuracy: true,
-    timeout: 5000,
-    maximumAge: 0,
-};
-
-//user info console
 function success(pos) {
     const crd = pos.coords;
 
@@ -45,45 +44,23 @@ function success(pos) {
     console.log(`Latitude : ${crd.latitude}`);
     console.log(`Longitude: ${crd.longitude}`);
     console.log(`More or less ${crd.accuracy} meters.`);
+
+    const position = {
+        lat: crd.latitude,
+        lng: crd.longitude,
+    };
+
+    // Update marker position and center map
+    marker.setPosition(position);
+    map.setCenter(position);
 }
 
-//user denied access location
 function error(err) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
-}
-
-//ask user permission
-navigator.geolocation.getCurrentPosition(success, error, options)
-{
-
-    //located user currentlocation
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const pos = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude,
-                };
-
-
-                //After located show marker and located.
-                marker.setPosition(pos);
-                map.setCenter(pos);
-                //infoWindow.setPosition(pos);
-                //infoWindow.setContent("location found");
-                //infoWindow.open(map);
-                map.setZoom(15);
-        
-            },
-            () => {
-                handleLocationError(true, infoWindow, map.getCenter());
-            },
-        );
-    } else {
-        // Browser doesn't support Geolocation
-        handleLocationError(false, infoWindow, map.getCenter());
+    if (err.code === err.PERMISSION_DENIED) {
+        alert("Please enable GPS for accurate location tracking.");
     }
-};
+}
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     infoWindow.setPosition(pos);
@@ -94,3 +71,5 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     );
     infoWindow.open(map);
 }
+
+initMap();
